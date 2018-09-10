@@ -23,6 +23,12 @@
             "homepage": "https://github.com/thephpleague/omnipay-firstdata/contributors"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/davidbankes/omnipay-tests.git"
+        }
+    ],
     "autoload": {
         "psr-4": { "Omnipay\\FirstData\\" : "src/" }
     },
@@ -30,7 +36,7 @@
         "omnipay/common": "~2.0"
     },
     "require-dev": {
-        "omnipay/tests": "~2.0"
+        "dbankes/omnipay-tests": "~2.1.1"
     },
     "extra": {
         "branch-alias": {
