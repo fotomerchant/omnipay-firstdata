@@ -1,5 +1,5 @@
 {
-    "name": "davidbankes/omnipay-firstdata",
+    "name": "omnipay/firstdata",
     "type": "library",
     "description": "First Data driver for the Omnipay payment processing library",
     "keywords": [
@@ -36,7 +36,7 @@
         "omnipay/common": "~2.0"
     },
     "require-dev": {
-        "dbankes/omnipay-tests": "~2.1.1"
+        "omnipay/tests": "~2.1.1"
     },
     "extra": {
         "branch-alias": {
