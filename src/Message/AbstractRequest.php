@@ -16,14 +16,11 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     /** @var string Content type use to calculate the hmac string */
     const CONTENT_TYPE = 'application/json; charset=UTF-8';
 
-    /** API version to use. See the note about the hashing requirements for v12 or higher. */
-    const API_VERSION = 'v14';
-
     /** @var string live endpoint URL base */
-    protected $liveEndpoint = 'https://api.globalgatewaye4.firstdata.com/transaction/';
+    protected $liveEndpoint = 'https://api.payeezy.com/v1/transactions/';
 
     /** @var string test endpoint URL base */
-    protected $testEndpoint = 'https://api.demo.globalgatewaye4.firstdata.com/transaction/';
+    protected $testEndpoint = 'https://api-cert.payeezy.com/v1/transactions/';
 
     /** @var int api transaction type */
     protected $transactionType = '00';
@@ -347,7 +344,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     protected function getEndpoint()
     {
-        return ($this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint) . self::API_VERSION;
+        return $this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint;
     }
 
     /**
