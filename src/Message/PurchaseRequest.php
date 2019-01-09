@@ -77,7 +77,7 @@ namespace Omnipay\FirstData\Message;
  * }
  * </code>
  */
-class PayeezyPurchaseRequest extends PayeezyAbstractRequest
+class PurchaseRequest extends AbstractRequest
 {
     protected $action = self::TRAN_PURCHASE;
 

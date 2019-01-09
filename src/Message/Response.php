@@ -20,7 +20,7 @@ use Omnipay\Common\Message\RequestInterface;
  * The transaction reference returned by this class' getTransactionReference is a
  * concatenated value of the authorization number and the transaction tag.
  */
-class PayeezyResponse extends AbstractResponse
+class Response extends AbstractResponse
 {
     public function __construct(RequestInterface $request, $data)
     {

@@ -4,9 +4,9 @@ namespace Omnipay\FirstData;
 
 use Omnipay\Tests\GatewayTestCase;
 
-class PayeezyGatewayTest extends GatewayTestCase
+class GatewayTest extends GatewayTestCase
 {
-    /** @var  PayeezyGateway */
+    /** @var  Gateway */
     protected $gateway;
 
     /** @var  array */
@@ -16,7 +16,7 @@ class PayeezyGatewayTest extends GatewayTestCase
     {
         parent::setUp();
 
-        $this->gateway = new PayeezyGateway($this->getHttpClient(), $this->getHttpRequest());
+        $this->gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest());
         $this->gateway->setGatewayId('1234');
         $this->gateway->setPassword('abcde');
 

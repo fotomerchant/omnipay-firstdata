@@ -4,11 +4,11 @@ namespace Omnipay\FirstData\Message;
 
 use Omnipay\Tests\TestCase;
 
-class PayeezyAuthorizeRequestTest extends TestCase
+class AuthorizeRequestTest extends TestCase
 {
     public function testAuthorizeSuccess()
     {
-        $request = new PayeezyAuthorizeRequest($this->getHttpClient(), $this->getHttpRequest());
+        $request = new AuthorizeRequest($this->getHttpClient(), $this->getHttpRequest());
         $request->initialize(
             array(
                 'amount' => '12.00',

@@ -8,7 +8,7 @@ namespace Omnipay\FirstData\Message;
 /**
  * First Data Payeezy Capture Request
  */
-class PayeezyCaptureRequest extends PayeezyRefundRequest
+class CaptureRequest extends RefundRequest
 {
     protected $action = self::TRAN_TAGGEDPREAUTHCOMPLETE;
 }

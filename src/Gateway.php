@@ -93,7 +93,7 @@ use Omnipay\Common\AbstractGateway;
  * @link https://provisioning.demo.globalgatewaye4.firstdata.com/signup
  * @link https://support.payeezy.com/hc/en-us/articles/204504235-Using-test-credit-card-numbers
  */
-class PayeezyGateway extends AbstractGateway
+class Gateway extends AbstractGateway
 {
     public function getName()
     {
@@ -130,7 +130,9 @@ class PayeezyGateway extends AbstractGateway
      * Calls to the Payeezy Gateway API are secured with a gateway ID and
      * password.
      *
-     * @return PayeezyGateway provides a fluent interface.
+     * @param string $value
+     *
+     * @return Gateway provides a fluent interface.
      */
     public function setGatewayId($value)
     {
@@ -156,7 +158,9 @@ class PayeezyGateway extends AbstractGateway
      * Calls to the Payeezy Gateway API are secured with a gateway ID and
      * password.
      *
-     * @return PayeezyGateway provides a fluent interface.
+     * @param string $value
+     *
+     * @return Gateway provides a fluent interface.
      */
     public function setPassword($value)
     {
@@ -182,7 +186,9 @@ class PayeezyGateway extends AbstractGateway
      * Calls to the Payeezy Gateway API are secured with a gateway ID and
      * password.
      *
-     * @return PayeezyGateway provides a fluent interface.
+     * @param string $value
+     *
+     * @return Gateway provides a fluent interface.
      */
     public function setKeyId($value)
     {
@@ -208,7 +214,9 @@ class PayeezyGateway extends AbstractGateway
      * Calls to the Payeezy Gateway API are secured with a gateway ID and
      * password.
      *
-     * @return PayeezyGateway provides a fluent interface.
+     * @param string $value
+     *
+     * @return Gateway provides a fluent interface.
      */
     public function setHmac($value)
     {
@@ -220,11 +228,11 @@ class PayeezyGateway extends AbstractGateway
      *
      * @param array $parameters
      *
-     * @return \Omnipay\FirstData\Message\PayeezyPurchaseRequest
+     * @return \Omnipay\Common\Message\AbstractRequest|Message\PurchaseRequest
      */
     public function purchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\FirstData\Message\PayeezyPurchaseRequest', $parameters);
+        return $this->createRequest('\Omnipay\FirstData\Message\PurchaseRequest', $parameters);
     }
 
     /**
@@ -232,11 +240,11 @@ class PayeezyGateway extends AbstractGateway
      *
      * @param array $parameters
      *
-     * @return \Omnipay\FirstData\Message\PayeezyAuthorizeRequest
+     * @return \Omnipay\Common\Message\AbstractRequest|Message\AuthorizeRequest
      */
     public function authorize(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\FirstData\Message\PayeezyAuthorizeRequest', $parameters);
+        return $this->createRequest('\Omnipay\FirstData\Message\AuthorizeRequest', $parameters);
     }
 
     /**
@@ -244,11 +252,11 @@ class PayeezyGateway extends AbstractGateway
      *
      * @param array $parameters
      *
-     * @return \Omnipay\FirstData\Message\PayeezyCaptureRequest
+     * @return \Omnipay\Common\Message\AbstractRequest|Message\CaptureRequest
      */
     public function capture(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\FirstData\Message\PayeezyCaptureRequest', $parameters);
+        return $this->createRequest('\Omnipay\FirstData\Message\CaptureRequest', $parameters);
     }
 
     /**
@@ -256,11 +264,11 @@ class PayeezyGateway extends AbstractGateway
      *
      * @param array $parameters
      *
-     * @return \Omnipay\FirstData\Message\PayeezyRefundRequest
+     * @return \Omnipay\Common\Message\AbstractRequest|Message\RefundRequest
      */
     public function refund(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\FirstData\Message\PayeezyRefundRequest', $parameters);
+        return $this->createRequest('\Omnipay\FirstData\Message\RefundRequest', $parameters);
     }
 
     /**
@@ -268,10 +276,10 @@ class PayeezyGateway extends AbstractGateway
      *
      * @param array $parameters
      *
-     * @return \Omnipay\FirstData\Message\PayeezyVoidRequest
+     * @return \Omnipay\Common\Message\AbstractRequest|Message\VoidRequest
      */
     public function void(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\FirstData\Message\PayeezyVoidRequest', $parameters);
+        return $this->createRequest('\Omnipay\FirstData\Message\VoidRequest', $parameters);
     }
 }

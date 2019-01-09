@@ -8,7 +8,7 @@ namespace Omnipay\FirstData\Message;
 /**
  * First Data Payeezy Authorize Request
  */
-class PayeezyAuthorizeRequest extends PayeezyPurchaseRequest
+class AuthorizeRequest extends PurchaseRequest
 {
     protected $action = self::TRAN_PREAUTH;
 }

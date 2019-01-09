@@ -8,7 +8,7 @@ namespace Omnipay\FirstData\Message;
 /**
  * First Data Payeezy Abstract Request
  */
-abstract class PayeezyAbstractRequest extends \Omnipay\Common\Message\AbstractRequest
+abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
     /** @var string Method used to calculate the hmac strings. */
     const METHOD_POST = 'POST';
@@ -77,7 +77,7 @@ abstract class PayeezyAbstractRequest extends \Omnipay\Common\Message\AbstractRe
      * Calls to the Payeezy Gateway API are secured with a gateway ID and
      * password.
      *
-     * @return PayeezyAbstractRequest provides a fluent interface.
+     * @return AbstractRequest provides a fluent interface.
      */
     public function setGatewayId($value)
     {
@@ -103,7 +103,7 @@ abstract class PayeezyAbstractRequest extends \Omnipay\Common\Message\AbstractRe
      * Calls to the Payeezy Gateway API are secured with a gateway ID and
      * password.
      *
-     * @return PayeezyAbstractRequest provides a fluent interface.
+     * @return AbstractRequest provides a fluent interface.
      */
     public function setPassword($value)
     {
@@ -129,7 +129,7 @@ abstract class PayeezyAbstractRequest extends \Omnipay\Common\Message\AbstractRe
      * Calls to the Payeezy Gateway API are secured with a gateway ID and
      * password.
      *
-     * @return PayeezyAbstractRequest provides a fluent interface.
+     * @return AbstractRequest provides a fluent interface.
      */
     public function setKeyId($value)
     {
@@ -155,7 +155,7 @@ abstract class PayeezyAbstractRequest extends \Omnipay\Common\Message\AbstractRe
      * Calls to the Payeezy Gateway API are secured with a gateway ID and
      * password.
      *
-     * @return PayeezyAbstractRequest provides a fluent interface.
+     * @return AbstractRequest provides a fluent interface.
      */
     public function setHmac($value)
     {
@@ -167,7 +167,7 @@ abstract class PayeezyAbstractRequest extends \Omnipay\Common\Message\AbstractRe
      *
      * @param int $transactionType
      *
-     * @return PayeezyAbstractRequest provides a fluent interface.
+     * @return AbstractRequest provides a fluent interface.
      */
     public function setTransactionType($transactionType)
     {
@@ -308,7 +308,7 @@ abstract class PayeezyAbstractRequest extends \Omnipay\Common\Message\AbstractRe
     /**
      * @param mixed $data
      *
-     * @return PayeezyResponse
+     * @return Response
      */
     public function sendData($data)
     {
@@ -355,10 +355,10 @@ abstract class PayeezyAbstractRequest extends \Omnipay\Common\Message\AbstractRe
      *
      * @param $data
      *
-     * @return PayeezyResponse
+     * @return Response
      */
     protected function createResponse($data)
     {
-        return $this->response = new PayeezyResponse($this, $data);
+        return $this->response = new Response($this, $data);
     }
 }

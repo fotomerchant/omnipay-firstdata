@@ -8,7 +8,7 @@ namespace Omnipay\FirstData\Message;
 /**
  * First Data Payeezy Refund Request
  */
-class PayeezyRefundRequest extends PayeezyAbstractRequest
+class RefundRequest extends AbstractRequest
 {
     protected $action = self::TRAN_TAGGEDREFUND;
 

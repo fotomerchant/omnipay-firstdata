@@ -3,13 +3,12 @@
 namespace Omnipay\FirstData\Message;
 
 use Omnipay\Tests\TestCase;
-use Omnipay\FirstData\Message\PayeezyPurchaseRequest;
 
-class PayeezyPurchaseRequestTest extends TestCase
+class PurchaseRequestTest extends TestCase
 {
     public function testPurchaseSuccess()
     {
-        $request = new PayeezyPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
+        $request = new PurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $request->initialize(
             array(
                 'amount' => '12.00',
@@ -34,7 +33,7 @@ class PayeezyPurchaseRequestTest extends TestCase
 
         $options['card']['number'] = '6304000000000000';
 
-        $request = new PayeezyPurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
+        $request = new PurchaseRequest($this->getHttpClient(), $this->getHttpRequest());
         $request->initialize($options);
 
         $data = $request->getData();

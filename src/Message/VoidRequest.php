@@ -8,7 +8,7 @@ namespace Omnipay\FirstData\Message;
 /**
  * First Data Payeezy Void Request
  */
-class PayeezyVoidRequest extends PayeezyRefundRequest
+class VoidRequest extends RefundRequest
 {
     protected $action = self::TRAN_TAGGEDVOID;
 }

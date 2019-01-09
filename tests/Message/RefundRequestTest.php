@@ -4,11 +4,11 @@ namespace Omnipay\FirstData\Message;
 
 use Omnipay\Tests\TestCase;
 
-class PayeezyRefundRequestTest extends TestCase
+class RefundRequestTest extends TestCase
 {
     public function testRefundSuccess()
     {
-        $request = new PayeezyRefundRequest($this->getHttpClient(), $this->getHttpRequest());
+        $request = new RefundRequest($this->getHttpClient(), $this->getHttpRequest());
         $request->initialize(
             array(
                 'amount' => '12.00',
