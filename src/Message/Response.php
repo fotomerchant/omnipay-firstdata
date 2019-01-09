@@ -3,7 +3,7 @@
  * First Data Payeezy Response
  */
 
-namespace Omnipay\FirstData\Message;
+namespace Omnipay\Payeezy\Message;
 
 use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\RequestInterface;

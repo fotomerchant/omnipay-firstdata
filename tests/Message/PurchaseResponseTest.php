@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\FirstData\Message;
+namespace Omnipay\Payeezy\Message;
 
 use Omnipay\Tests\TestCase;
 

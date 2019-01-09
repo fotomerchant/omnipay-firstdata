@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\FirstData;
+namespace Omnipay\Payeezy;
 
 use Omnipay\Tests\GatewayTestCase;
 

@@ -3,7 +3,7 @@
  * First Data Payeezy Capture Request
  */
 
-namespace Omnipay\FirstData\Message;
+namespace Omnipay\Payeezy\Message;
 
 /**
  * First Data Payeezy Capture Request

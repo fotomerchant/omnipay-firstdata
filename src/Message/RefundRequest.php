@@ -3,7 +3,7 @@
  * First Data Payeezy Refund Request
  */
 
-namespace Omnipay\FirstData\Message;
+namespace Omnipay\Payeezy\Message;
 
 /**
  * First Data Payeezy Refund Request
