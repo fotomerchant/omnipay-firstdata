@@ -1,18 +1,18 @@
 <?php
 /**
- * First Data Payeezy Purchase Request
+ * Payeezy Purchase Request
  */
 namespace Omnipay\Payeezy\Message;
 
 /**
- * First Data Payeezy Purchase Request
+ * Payeezy Purchase Request
  *
  * ### Example
  *
  * <code>
- * // Create a gateway for the First Data Payeezy Gateway
+ * // Create a gateway for the Payeezy Gateway
  * // (routes to GatewayFactory::create)
- * $gateway = Omnipay::create('FirstData_Payeezy');
+ * $gateway = Omnipay::create('Payeezy');
  *
  * // Initialise the gateway
  * $gateway->initialize(array(

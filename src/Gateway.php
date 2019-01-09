@@ -1,25 +1,25 @@
 <?php
 /**
- * First Data Payeezy Gateway
+ * Payeezy Gateway
  */
 namespace Omnipay\Payeezy;
 
 use Omnipay\Common\AbstractGateway;
 
 /**
- * First Data Payeezy Gateway
+ * Payeezy Gateway
  *
  * The First Data Global Gateway e4 (previously referred to as "First Data Global", and so if you see
  * internet references to the First Data Global Gateway, they are probably referring to this one, distinguished
  * by having URLs like "api.globalgatewaye4.firstdata.com") is now called the Payeezy Gateway and is
- * referred to here as the First Data Payeezy Gateway.
+ * referred to here as the Payeezy Gateway.
  *
  * API details for the Payeezy gateway are at the links below.
  *
  * ### Example
  *
  * <code>
- * // Create a gateway for the First Data Payeezy Gateway
+ * // Create a gateway for the Payeezy Gateway
  * // (routes to GatewayFactory::create)
  * $gateway = Omnipay::create('FirstData_Payeezy');
  *
@@ -97,7 +97,7 @@ class Gateway extends AbstractGateway
 {
     public function getName()
     {
-        return 'First Data Payeezy';
+        return 'Payeezy';
     }
 
     public function getDefaultParameters()

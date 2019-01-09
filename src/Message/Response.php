@@ -1,6 +1,6 @@
 <?php
 /**
- * First Data Payeezy Response
+ * Payeezy Response
  */
 
 namespace Omnipay\Payeezy\Message;
@@ -9,7 +9,7 @@ use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\RequestInterface;
 
 /**
- * First Data Payeezy Response
+ * Payeezy Response
  *
  * ### Quirks
  *

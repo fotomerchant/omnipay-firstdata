@@ -1,12 +1,12 @@
 <?php
 /**
- * First Data Payeezy Abstract Request
+ * Payeezy Abstract Request
  */
 
 namespace Omnipay\Payeezy\Message;
 
 /**
- * First Data Payeezy Abstract Request
+ * Payeezy Abstract Request
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {

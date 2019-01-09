@@ -1,12 +1,12 @@
 <?php
 /**
- * First Data Payeezy Refund Request
+ * Payeezy Refund Request
  */
 
 namespace Omnipay\Payeezy\Message;
 
 /**
- * First Data Payeezy Refund Request
+ * Payeezy Refund Request
  */
 class RefundRequest extends AbstractRequest
 {

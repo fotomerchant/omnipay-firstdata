@@ -1,12 +1,12 @@
 <?php
 /**
- * First Data Payeezy Void Request
+ * Payeezy Void Request
  */
 
 namespace Omnipay\Payeezy\Message;
 
 /**
- * First Data Payeezy Void Request
+ * Payeezy Void Request
  */
 class VoidRequest extends RefundRequest
 {

@@ -1,12 +1,12 @@
 <?php
 /**
- * First Data Payeezy Authorize Request
+ * Payeezy Authorize Request
  */
 
 namespace Omnipay\Payeezy\Message;
 
 /**
- * First Data Payeezy Authorize Request
+ * Payeezy Authorize Request
  */
 class AuthorizeRequest extends PurchaseRequest
 {
