@@ -14,7 +14,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     const METHOD_POST = 'POST';
 
     /** @var string Content type use to calculate the hmac string */
-    const CONTENT_TYPE = 'application/json; charset=UTF-8';
+    const CONTENT_TYPE = 'application/json';
 
     /** @var string live endpoint URL base */
     protected $liveEndpoint = 'https://api.payeezy.com/v1/transactions/';
@@ -22,179 +22,70 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     /** @var string test endpoint URL base */
     protected $testEndpoint = 'https://api-cert.payeezy.com/v1/transactions/';
 
-    /** @var int api transaction type */
-    protected $transactionType = '00';
-
-    //
-    // Transaction types
-    //
-    const TRAN_PURCHASE                 = '00';
-    const TRAN_PREAUTH                  = '01';
-    const TRAN_PREAUTHCOMPLETE          = '02';
-    const TRAN_FORCEDPOST               = '03';
-    const TRAN_REFUND                   = '04';
-    const TRAN_PREAUTHONLY              = '05';
-    const TRAN_PAYPALORDER              = '07';
-    const TRAN_VOID                     = '13';
-    const TRAN_TAGGEDPREAUTHCOMPLETE    = '32';
-    const TRAN_TAGGEDVOID               = '33';
-    const TRAN_TAGGEDREFUND             = '34';
-    const TRAN_CASHOUT                  = '83';
-    const TRAN_ACTIVATION               = '85';
-    const TRAN_BALANCEINQUIRY           = '86';
-    const TRAN_RELOAD                   = '88';
-    const TRAN_DEACTIVATION             = '89';
-
-    /** @var array Names of the credit card types. */
-    protected static $cardTypes = array(
-        'visa'        => 'Visa',
-        'mastercard'  => 'Mastercard',
-        'discover'    => 'Discover',
-        'amex'        => 'American Express',
-        'diners_club' => 'Diners Club',
-        'jcb'         => 'JCB',
-    );
-
     /**
-     * Get Gateway ID
-     *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
+     * Get API Key
      *
      * @return string
      */
-    public function getGatewayId()
+    public function getApiKey()
     {
-        return $this->getParameter('gatewayId');
+        return $this->getParameter('apiKey');
     }
 
     /**
-     * Set Gateway ID
+     * Set API Key
      *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
+     * @param string $value
      *
-     * @return AbstractRequest provides a fluent interface.
+     * @return \Omnipay\Common\Message\AbstractRequest
      */
-    public function setGatewayId($value)
+    public function setApiKey($value)
     {
-        return $this->setParameter('gatewayId', $value);
+        return $this->setParameter('apiKey', $value);
     }
 
     /**
-     * Get Password
-     *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
+     * Get API Secret
      *
      * @return string
      */
-    public function getPassword()
+    public function getApiSecret()
     {
-        return $this->getParameter('password');
+        return $this->getParameter('apiSecret');
     }
 
     /**
-     * Set Password
+     * Set API Secret
      *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
+     * @param string $value
      *
-     * @return AbstractRequest provides a fluent interface.
+     * @return \Omnipay\Common\Message\AbstractRequest
      */
-    public function setPassword($value)
+    public function setApiSecret($value)
     {
-        return $this->setParameter('password', $value);
+        return $this->setParameter('apiSecret', $value);
     }
 
     /**
-     * Get Key Id
+     * Get Merchant Token
      *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
-     *
-     * @return mixed
+     * @return string
      */
-    public function getKeyId()
+    public function getMerchantToken()
     {
-        return $this->getParameter('keyId');
+        return $this->getParameter('merchantToken');
     }
 
     /**
-     * Set Key Id
+     * Set Merchant Token
      *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
+     * @param string $value
      *
-     * @return AbstractRequest provides a fluent interface.
+     * @return \Omnipay\Common\Message\AbstractRequest
      */
-    public function setKeyId($value)
+    public function setMerchantToken($value)
     {
-        return $this->setParameter('keyId', $value);
-    }
-
-    /**
-     * Get Hmac
-     *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
-     *
-     * @return mixed
-     */
-    public function getHmac()
-    {
-        return $this->getParameter('hmac');
-    }
-
-    /**
-     * Set Hmac
-     *
-     * Calls to the Payeezy Gateway API are secured with a gateway ID and
-     * password.
-     *
-     * @return AbstractRequest provides a fluent interface.
-     */
-    public function setHmac($value)
-    {
-        return $this->setParameter('hmac', $value);
-    }
-
-    /**
-     * Set transaction type
-     *
-     * @param int $transactionType
-     *
-     * @return AbstractRequest provides a fluent interface.
-     */
-    public function setTransactionType($transactionType)
-    {
-        $this->transactionType = $transactionType;
-        return $this;
-    }
-
-    /**
-     * Get transaction type
-     *
-     * @return int
-     */
-    public function getTransactionType()
-    {
-        return $this->transactionType;
-    }
-
-    /**
-     * Get the base transaction data.
-     *
-     * @return array
-     */
-    protected function getBaseData()
-    {
-        $data                     = array();
-        $data['gateway_id']       = $this->getGatewayID();
-        $data['password']         = $this->getPassword();
-        $data['transaction_type'] = $this->getTransactionType();
-
-        return $data;
+        return $this->setParameter('merchantToken', $value);
     }
 
     /**
@@ -206,90 +97,31 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return array(
             'Content-Type'  => self::CONTENT_TYPE,
-            'Accept'        => 'application/json'
+            'apikey'        => $this->getApiKey(),
+            'token'         => $this->getMerchantToken(),
         );
     }
 
     /**
-     * @return string
+     * @param array $payload
+     *
+     * @return array
      */
-    protected function getGge4Date()
+    public function hmacAuthorizationTokenHeaders($payload)
     {
-        return gmdate("Y-m-d") . 'T' . gmdate("H:i:s") . 'Z';
-    }
+        $payload = json_encode($payload, JSON_FORCE_OBJECT);
+        $nonce = strval(hexdec(bin2hex(openssl_random_pseudo_bytes(4, $cstrong))));
+        $timestamp = strval(time()*1000); //time stamp in milli seconds
+        $data = $this->getApiKey() . $nonce . $timestamp . $this->getMerchantToken() . $payload;
+        $hashAlgorithm = "sha256";
+        $hmac = hash_hmac($hashAlgorithm, $data, $this->getApiSecret(), false); // HMAC Hash in hex
+        $authorization = base64_encode($hmac);
 
-    /**
-     * Composes the hash string needed for the newer versions of the API
-     *
-     * @param $contentDigest
-     * @param $gge4Date
-     * @param $uri
-     *
-     * @return string
-     */
-    protected function buildHashString($contentDigest, $gge4Date, $uri)
-    {
-        return sprintf(
-            "%s\n%s\n%s\n%s\n%s",
-            self::METHOD_POST,
-            self::CONTENT_TYPE,
-            $contentDigest,
-            $gge4Date,
-            $uri
+        return array(
+            'Authorization' => $authorization,
+            'nonce' => $nonce,
+            'timestamp' => $timestamp,
         );
-    }
-
-    /**
-     * Composes the auth string needed for the newer versions of the API
-     *
-     * @param $hashString
-     *
-     * @return string
-     */
-    protected function buildAuthString($hashString)
-    {
-        return sprintf(
-            'GGE4_API %s:%s',
-            $this->getKeyId(),
-            base64_encode(hash_hmac("sha1", $hashString, $this->getHmac(), true))
-        );
-    }
-
-    /**
-     * Get the card type name, from the card type code.
-     *
-     * @param string $type
-     *
-     * @return string
-     */
-    public static function getCardType($type)
-    {
-        if (isset(self::$cardTypes[$type])) {
-            return self::$cardTypes[$type];
-        }
-        return $type;
-    }
-
-    /**
-     * Get the AVS Hash.
-     *
-     * Important Note about v12 or higher of the Web Service API: Merchants wishing to use
-     * V12 or higher of the API must implement the API HMAC hash security calculation.
-     * Further information on this subject can be found at the link below.
-     *
-     * @link https://support.payeezy.com/entries/22069302-api-security-hmac-hash
-     *
-     * @return string
-     */
-    public function getAVSHash()
-    {
-        $parts   = array();
-        $parts[] = $this->getCard()->getAddress1();
-        $parts[] = $this->getCard()->getPostcode();
-        $parts[] = $this->getCard()->getCity();
-        $parts[] = $this->getCard()->getState();
-        $parts[] = $this->getCard()->getCountry();
-        return implode('|', $parts);
     }
 
     /**
@@ -297,9 +129,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
      */
     public function getData()
     {
-        $this->setTransactionType($this->action);
-        $data = $this->getBaseData();
-        return $data;
+        return [];
     }
 
     /**
@@ -310,20 +140,10 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function sendData($data)
     {
         $headers  = $this->getHeaders();
-        $gge4Date = $this->getGge4Date();
         $endpoint = $this->getEndpoint();
 
-        $url = parse_url($endpoint);
-
-        $contentDigest = sha1(json_encode($data));
-
-        $hashString = $this->buildHashString($contentDigest, $gge4Date, $url['path']);
-
-        $authString = $this->buildAuthString($hashString);
-
-        $headers["X-GGe4-Content-SHA1"] = $contentDigest;
-        $headers["X-GGe4-Date"]         = $gge4Date;
-        $headers["Authorization"]       = $authString;
+        $hmacAuthHeaders = $this->hmacAuthorizationTokenHeaders($data);
+        $headers = array_merge($headers, $hmacAuthHeaders);
 
         $client = $this->httpClient->post(
             $endpoint,
@@ -334,6 +154,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         $client->getCurlOptions()->set(CURLOPT_PORT, 443);
         $httpResponse = $client->send();
+
         return $this->createResponse($httpResponse->getBody());
     }
 

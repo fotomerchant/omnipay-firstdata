@@ -1,8 +1,4 @@
 <?php
-/**
- * Payeezy Response
- */
-
 namespace Omnipay\Payeezy\Message;
 
 use Omnipay\Common\Message\AbstractResponse;
@@ -10,68 +6,120 @@ use Omnipay\Common\Message\RequestInterface;
 
 /**
  * Payeezy Response
- *
- * ### Quirks
- *
- * This gateway requires both a transaction reference (aka an authorization number)
- * and a transaction tag to implement either voids or refunds.  These are referred
- * to in the documentation as "tagged refund" and "tagged voids".
- *
- * The transaction reference returned by this class' getTransactionReference is a
- * concatenated value of the authorization number and the transaction tag.
  */
 class Response extends AbstractResponse
 {
+    const TRANSACTION_STATUS_APPROVED = 'approved';
+    const TRANSACTION_STATUS_DECLINED = 'declined';
+    const TRANSACTION_STATUS_NOT_PROCESSED = 'not processed';
+
+    const VALIDATION_STATUS_SUCCESS = 'success';
+    const VALIDATION_STATUS_FAILURE = 'failure';
+
+    /**
+     * Response constructor.
+     *
+     * @param RequestInterface $request
+     * @param string           $data
+     */
     public function __construct(RequestInterface $request, $data)
     {
-        $this->request = $request;
-        $this->data = json_decode($data, true);
-    }
+        parent::__construct($request, $data);
 
-    public function isSuccessful()
-    {
-        return ($this->data['transaction_approved'] == '1') ? true : false;
+        $this->data = json_decode($data, true);
     }
 
     /**
      * Get an item from the internal data array
      *
-     * This is a short cut function to ensure that we test that the item
-     * exists in the data array before we try to retrieve it.
+     * @param string $key
      *
-     * @param $itemname
      * @return mixed|null
      */
-    public function getDataItem($itemname)
+    public function getDataItem($key)
     {
-        if (isset($this->data[$itemname])) {
-            return $this->data[$itemname];
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
         }
 
         return null;
     }
 
     /**
-     * Get the authorization number
-     *
-     * This is the authorization number returned by the cardholder’s financial
-     * institution when a transaction has been approved. This value overrides any
-     * value sent for the Request Property of the same name.
-     *
-     * @return integer
+     * @return bool
      */
-    public function getAuthorizationNumber()
+    public function isSuccessful()
     {
-        return $this->getDataItem('authorization_num');
+        return $this->getTransactionStatus() === self::TRANSACTION_STATUS_APPROVED;
     }
 
     /**
-     * Get the transaction tag.
+     * Internal Log ID
      *
-     * A unique identifier to associate with a tagged transaction. This value overrides
-     * any value sent for the Request Property of the same name.
+     * @return string|null
+     */
+    public function getCorrelationId()
+    {
+        return $this->getDataItem('correlation_id');
+    }
+
+    /**
+     * Transaction Status
      *
-     * @return string
+     * Approved = Card Approved
+     * Declined = Gateway declined
+     * Not Processed = For any internal errors this status is returned.
+     *
+     * @return string|null
+     */
+    public function getTransactionStatus()
+    {
+        return $this->getDataItem('transaction_status');
+    }
+
+    /**
+     * Validation Status
+     *
+     * Values - “success” / ”failure”.
+     * Input validation errors encountered if status returned is failure.
+     *
+     * @return string|null
+     */
+    public function getValidationStatus()
+    {
+        return $this->getDataItem('validation_status');
+    }
+
+    /**
+     * Transaction Type
+     *
+     * It is the transaction_type provided in request.
+     *
+     * @return string|null
+     */
+    public function getTransactionType()
+    {
+        return $this->getDataItem('transaction_type');
+    }
+
+    /**
+     * Transaction ID
+     *
+     * Needed as part of the url to process secondary transactions like capture/void/refund/recurring/split-shipment.
+     *
+     * @return string|null
+     */
+    public function getTransactionId()
+    {
+        return $this->getDataItem('transaction_id');
+    }
+
+    /**
+     * Transaction Tag
+     *
+     * Needed as part of the payload to process secondary transactions like capture/void/refund/recurring/split-shipment.
+     *
+     * @return string|null
      */
     public function getTransactionTag()
     {
@@ -79,61 +127,133 @@ class Response extends AbstractResponse
     }
 
     /**
-     * Get the transaction reference
+     * Method
      *
-     * Because refunding or voiding a transaction requires both the authorization number
-     * and the transaction tag, we concatenate them together to make the transaction
-     * reference.
+     * Inputted transaction method.
      *
-     * @return string
+     * @return string|null
      */
-    public function getTransactionReference()
+    public function getMethod()
     {
-        return $this->getAuthorizationNumber() . '::' . $this->getTransactionTag();
+        return $this->getDataItem('method');
     }
 
     /**
-     * Get the transaction sequence number.
+     * Amount
      *
-     * A digit sequentially incremented number generated by Global Gateway e4 and passed
-     * through to the financial institution. It is also passed back to the client in the
-     * transaction response. This number can be used for tracking and audit purposes.
+     * Processed Amount in cents.
      *
-     * @return string
+     * @return string|null
      */
-    public function getSequenceNo()
+    public function getAmount()
     {
-        return $this->getDataItem('sequence_no');
+        return $this->getDataItem('amount');
     }
 
     /**
-     * Get the credit card reference for a completed transaction.
+     * Currency
      *
-     * This is only provided if TransArmor processing is turned on for the gateway.
+     * ISO 4217 currency span Ex: USD.
      *
-     * @return string
+     * For the list of supported currencies:
+     * https://developer.payeezy.com/faqs/what-currencies-does-payeezy-support
+     *
+     * @return string|null
      */
-    public function getCardReference()
+    public function getCurrency()
     {
-        return $this->getDataItem('transarmor_token');
-    }
-
-    public function getMessage()
-    {
-        return $this->getDataItem('exact_message');
+        return $this->getDataItem('currency');
     }
 
     /**
-     * Get the error code.
+     * CVV2
      *
-     * This property indicates the processing status of the transaction. Please refer
-     * to the section on Exception Handling for further information. The Transaction_Error
-     * property will return True if this property is not “00”.
+     * Card Verification Value (CVV2) Response Codes.
      *
-     * @return string
+     * For the full list of response codes:
+     * https://developer.payeezy.com/payeezy-api/apis/post/transactions-4
+     *
+     * @return string|null
      */
-    public function getCode()
+    public function getCvv2()
     {
-        return $this->getDataItem('exact_resp_code');
+        return $this->getDataItem('cvv2');
+    }
+
+    /**
+     * Token
+     *
+     * Array that holds the tokenized card information.
+     *
+     * @return array|null
+     */
+    public function getToken()
+    {
+        return $this->getDataItem('token');
+    }
+
+    /**
+     * Bank Response Code
+     *
+     * Payeezy will return a standardized response code from the card issuing bank for each of your transactions.
+     *
+     * For the list of bank response codes returned:
+     * https://developer.payeezy.com/payeezy-api/apis/post/transactions-4
+     *
+     * @return string|null
+     */
+    public function getBankResponseCode()
+    {
+        return $this->getDataItem('bank_resp_code');
+    }
+
+    /**
+     * Bank Message
+     *
+     * Payeezy will return a standardized bank response for each of your transactions. Its a description / translation
+     * for the 3 digit bank response code.
+     *
+     * For the list of bank responses returned:
+     * https://developer.payeezy.com/payeezy-api/apis/post/transactions-4
+     *
+     * @return string|null
+     */
+    public function getBankMessage()
+    {
+        return $this->getDataItem('bank_message');
+    }
+
+    /**
+     * Gateway Response Code
+     *
+     * Payeezy gateway Response code indicates the status of a transaction as it is sent to the financial institution
+     * and returned to the client.
+     *
+     * Ex: The Response Code "00" (Transaction Normal) indicates that the transaction was processed normally. Any
+     * response other than "00" indicates that it was not normal.
+     *
+     * For the list of gateway response codes returned:
+     * https://developer.payeezy.com/payeezy-api/apis/post/transactions-4
+     *
+     * @return string|null
+     */
+    public function getGatewayResponseCode()
+    {
+        return $this->getDataItem('gateway_resp_code');
+    }
+
+    /**
+     * Gateway Message
+     *
+     * Payeezy gateway message is a description / translation for the gateway response code.
+     *
+     * For the list of gateway responses returned:
+     * https://developer.payeezy.com/payeezy-api/apis/post/transactions-4
+     *
+     * @return string|null
+     */
+    public function getGatewayMessage()
+    {
+        return $this->getDataItem('gateway_message');
     }
 }

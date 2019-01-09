@@ -10,19 +10,16 @@ namespace Omnipay\Payeezy\Message;
  */
 class RefundRequest extends AbstractRequest
 {
-    protected $action = self::TRAN_TAGGEDREFUND;
-
     public function getData()
     {
         $data = parent::getData();
 
-        $this->validate('transactionReference', 'amount');
+        $this->validate('amount', 'currency');
 
-        $data['amount']            = $this->getAmount();
-        $transaction_reference     = $this->getTransactionReference();
-        list($auth, $tag)          = explode('::', $transaction_reference);
-        $data['authorization_num'] = $auth;
-        $data['transaction_tag']   = $tag;
+        $data['method'] = 'credit_card';
+        $data['amount'] = $this->getAmount();
+        $data['currency_code'] = $this->getCurrency();
+        $data['transaction_tag'] = $this->getTransactionReference();
 
         return $data;
     }

@@ -9,16 +9,17 @@ class RefundRequestTest extends TestCase
     public function testRefundSuccess()
     {
         $request = new RefundRequest($this->getHttpClient(), $this->getHttpRequest());
-        $request->initialize(
-            array(
-                'amount' => '12.00',
-                'transactionReference' => '9999::DATADATADATA',
-            )
-        );
+
+        $request->initialize([
+            'amount' => '12.00',
+            'currency' => 'USD',
+            'transactionReference' => '2316606482',
+        ]);
 
         $data = $request->getData();
-        $this->assertEquals('9999', $data['authorization_num']);
-        $this->assertEquals('DATADATADATA', $data['transaction_tag']);
+        $this->assertEquals('credit_card', $data['method']);
         $this->assertEquals('12.00', $data['amount']);
+        $this->assertEquals('USD', $data['currency_code']);
+        $this->assertEquals('2316606482', $data['transaction_tag']);
     }
 }

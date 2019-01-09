@@ -66,10 +66,8 @@ namespace Omnipay\Payeezy\Message;
  *     'tokenCardType'              => 'visa', // MUST BE VALID CONST FROM \omnipay\common\CreditCard
  * ));
  *
- *
- *
- *
  * $response = $transaction->send();
+ *
  * if ($response->isSuccessful()) {
  *     echo "Purchase transaction was successful!\n";
  *     $sale_id = $response->getTransactionReference();
@@ -79,50 +77,84 @@ namespace Omnipay\Payeezy\Message;
  */
 class PurchaseRequest extends AbstractRequest
 {
-    protected $action = self::TRAN_PURCHASE;
-
     public function getData()
     {
         $data = parent::getData();
 
-        $this->validate('amount', 'card');
+        $this->validate('amount', 'currency');
 
+        $data['method'] = 'token';
         $data['amount'] = $this->getAmount();
-        $data['currency_code'] = $this->getCurrency();
-        $data['reference_no'] = $this->getTransactionId();
+        $data['currency'] = $this->getCurrency();
 
-        // add credit card details
-        if ($this->getCardReference()) {
-            $this->validate('tokenCardType');
-            $data['transarmor_token'] = $this->getCardReference();
-            $data['credit_card_type'] = $this->getTokenCardType();
-        } else {
-            $data['credit_card_type'] = self::getCardType($this->getCard()->getBrand());
-            $data['cc_number'] = $this->getCard()->getNumber();
-            $data['cc_verification_str2'] = $this->getCard()->getCvv();
-            $data['cc_verification_str1'] = $this->getAVSHash();
-            $data['cvd_presence_ind'] = 1;
-            $data['cvd_code'] = $this->getCard()->getCvv();
+        if ($token = $this->getToken()) {
+            $this->validate('tokenCardType', 'tokenCardHolderName', 'tokenCardExpiryDate');
+
+            $data['token'] = [
+                'token_type' => 'FDToken',
+                'token_data' => [
+                    'type' => $this->getTokenCardType(),
+                    'value' => $token,
+                    'cardholder_name' => $this->getTokenCardHolderName(),
+                    'exp_date' => $this->getTokenCardExpiryDate(),
+                ],
+            ];
         }
-        $data['cardholder_name'] = $this->getCard()->getName();
-        $data['cc_expiry'] = $this->getCard()->getExpiryDate('my');
-
-
-        $data['client_ip'] = $this->getClientIp();
-        $data['client_email'] = $this->getCard()->getEmail();
-        $data['language'] = strtoupper($this->getCard()->getCountry());
 
         return $data;
-
     }
 
+    /**
+     * @return string|null
+     */
     public function getTokenCardType()
     {
         return $this->getParameter('tokenCardType');
     }
 
+    /**
+     * @param string|null $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
     public function setTokenCardType($value)
     {
         return $this->setParameter('tokenCardType', $value);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTokenCardHolderName()
+    {
+        return $this->getParameter('tokenCardHolderName');
+    }
+
+    /**
+     * @param string|null $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
+    public function setTokenCardHolderName($value)
+    {
+        return $this->setParameter('tokenCardHolderName', $value);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTokenCardExpiryDate()
+    {
+        return $this->getParameter('tokenCardExpiryDate');
+    }
+
+    /**
+     * @param string|null $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
+    public function setTokenCardExpiryDate($value)
+    {
+        return $this->setParameter('tokenCardExpiryDate', $value);
     }
 }
