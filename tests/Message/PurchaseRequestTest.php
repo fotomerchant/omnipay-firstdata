@@ -16,13 +16,14 @@ class PurchaseRequestTest extends TestCase
             'token' => '1234567890',
             'tokenCardType' => 'visa',
             'tokenCardHolderName' => 'John Smith',
-            'tokenCardExpiryDate' => '0125',
+            'tokenCardExpiry' => '0125',
+            'tokenCardCvv' => '123',
         ]);
 
         $data = $request->getData();
         $this->assertEquals('token', $data['method']);
-        $this->assertEquals('12.00', $data['amount']);
-        $this->assertEquals('USD', $data['currency']);
+        $this->assertEquals('1200', $data['amount']);
+        $this->assertEquals('USD', $data['currency_code']);
 
         $token = $data['token'];
         $this->assertEquals('FDToken', $token['token_type']);
@@ -32,5 +33,6 @@ class PurchaseRequestTest extends TestCase
         $this->assertEquals('visa', $tokenData['type']);
         $this->assertEquals('John Smith', $tokenData['cardholder_name']);
         $this->assertEquals('0125', $tokenData['exp_date']);
+        $this->assertEquals('123', $tokenData['cvv']);
     }
 }

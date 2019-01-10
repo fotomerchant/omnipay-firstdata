@@ -9,9 +9,6 @@ class GatewayTest extends GatewayTestCase
     /** @var  Gateway */
     protected $gateway;
 
-    /** @var  array */
-    protected $options;
-
     public function setUp()
     {
         parent::setUp();
@@ -20,14 +17,6 @@ class GatewayTest extends GatewayTestCase
         $this->gateway->setApiKey('y6pWAJNyJyjGv66IsVuWnklkKUPFbb0a');
         $this->gateway->setApiSecret('86fbae7030253af3cd15faef2a1f4b67353e41fb6799f576b5093ae52901e6f7');
         $this->gateway->setMerchantToken('fdoa-a480ce8951daa73262734cf102641994c1e55e7cdf4c02b6');
-
-        $this->options = array(
-            'amount' => '13.00',
-            'card' => $this->getValidCard(),
-            'transactionId' => 'order2',
-            'currency' => 'USD',
-            'testMode' => true,
-        );
     }
 
     public function testProperties()
@@ -47,7 +36,8 @@ class GatewayTest extends GatewayTestCase
             'token' => '1',
             'tokenCardHolderName' => '1',
             'tokenCardType' => '1',
-            'tokenCardExpiryDate' => '1',
+            'tokenCardExpiry' => '1',
+            'tokenCardCvv' => '1',
         ])->send();
 
         $this->assertTrue($response->isSuccessful());
