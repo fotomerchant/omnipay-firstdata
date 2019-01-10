@@ -83,12 +83,34 @@ class PurchaseRequest extends AbstractRequest
 
         $this->validate('amount', 'currency');
 
+        $data['transaction_type'] = 'purchase';
         $data['method'] = 'token';
-        $data['amount'] = $this->getAmount();
-        $data['currency'] = $this->getCurrency();
+        $data['currency_code'] = $this->getCurrency();
+        $data['amount'] = str_replace('.', '', $this->getAmount()); // needs to be in cents
+
+        /*
+         * Bank Response Codes:
+         *
+         * Reference: https://support.payeezy.com/hc/en-us/articles/203730509-First-Data-Global-Gateway-e4-Bank-Response-Codes
+         * Format: 5XXX00
+         * Sample Amount: 530200 // Insufficient funds
+         *
+         * Gateway Response Codes:
+         *
+         * Reference: https://support.payeezy.com/hc/en-us/articles/203730499-eCommerce-Response-Codes-ETG-e4-Transaction-Gateway-Codes-
+         * Format: 5000XX
+         * Sample Amount: 500008 // CVV2/CID/CVC2 Data not verified
+         *
+         * CVV Response Codes:
+         *
+         * Reference: https://support.payeezy.com/hc/en-us/articles/204504185-How-to-test-CVD-CVV-CVV2-functionality
+         */
+
+        // $data['amount'] = "500008"; // CVV2/CID/CVC2 Data not verified
+        // $data['amount'] = "530200"; // Insufficient funds
 
         if ($token = $this->getToken()) {
-            $this->validate('tokenCardType', 'tokenCardHolderName', 'tokenCardExpiryDate');
+            $this->validate('tokenCardType', 'tokenCardHolderName', 'tokenCardExpiry', 'tokenCardCvv');
 
             $data['token'] = [
                 'token_type' => 'FDToken',
@@ -96,7 +118,8 @@ class PurchaseRequest extends AbstractRequest
                     'type' => $this->getTokenCardType(),
                     'value' => $token,
                     'cardholder_name' => $this->getTokenCardHolderName(),
-                    'exp_date' => $this->getTokenCardExpiryDate(),
+                    'exp_date' => $this->getTokenCardExpiry(),
+                    'cvv' => $this->getTokenCardCvv(),
                 ],
             ];
         }
@@ -143,9 +166,9 @@ class PurchaseRequest extends AbstractRequest
     /**
      * @return string|null
      */
-    public function getTokenCardExpiryDate()
+    public function getTokenCardExpiry()
     {
-        return $this->getParameter('tokenCardExpiryDate');
+        return $this->getParameter('tokenCardExpiry');
     }
 
     /**
@@ -153,8 +176,26 @@ class PurchaseRequest extends AbstractRequest
      *
      * @return \Omnipay\Common\Message\AbstractRequest
      */
-    public function setTokenCardExpiryDate($value)
+    public function setTokenCardExpiry($value)
     {
-        return $this->setParameter('tokenCardExpiryDate', $value);
+        return $this->setParameter('tokenCardExpiry', $value);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTokenCardCvv()
+    {
+        return $this->getParameter('tokenCardCvv');
+    }
+
+    /**
+     * @param string|null $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
+    public function setTokenCardCvv($value)
+    {
+        return $this->setParameter('tokenCardCvv', $value);
     }
 }
