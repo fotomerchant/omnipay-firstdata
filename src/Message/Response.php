@@ -54,6 +54,14 @@ class Response extends AbstractResponse
     }
 
     /**
+     * @return string|null
+     */
+    public function getTransactionReference()
+    {
+        return $this->getTransactionTag();
+    }
+
+    /**
      * Internal Log ID
      *
      * @return string|null
