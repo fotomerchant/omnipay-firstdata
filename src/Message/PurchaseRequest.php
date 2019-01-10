@@ -106,8 +106,8 @@ class PurchaseRequest extends AbstractRequest
          * Reference: https://support.payeezy.com/hc/en-us/articles/204504185-How-to-test-CVD-CVV-CVV2-functionality
          */
 
-        // $data['amount'] = "500008"; // CVV2/CID/CVC2 Data not verified
-        // $data['amount'] = "530200"; // Insufficient funds
+        // $data['amount'] = "500008"; // Gateway Response: CVV2/CID/CVC2 Data not verified
+        // $data['amount'] = "530200"; // Bank Response: Insufficient funds
 
         if ($token = $this->getToken()) {
             $this->validate('tokenCardType', 'tokenCardHolderName', 'tokenCardExpiry', 'tokenCardCvv');
