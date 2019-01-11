@@ -81,9 +81,10 @@ class PurchaseRequest extends AbstractRequest
     {
         $data = parent::getData();
 
-        $this->validate('amount', 'currency');
+        $this->validate('amount', 'currency', 'merchantReference');
 
         $data['transaction_type'] = 'purchase';
+        $data['merchant_ref'] = $this->getMerchantReference();
         $data['method'] = 'token';
         $data['currency_code'] = $this->getCurrency();
         $data['amount'] = str_replace('.', '', $this->getAmount()); // needs to be in cents
@@ -197,5 +198,27 @@ class PurchaseRequest extends AbstractRequest
     public function setTokenCardCvv($value)
     {
         return $this->setParameter('tokenCardCvv', $value);
+    }
+
+    /**
+     * Get Merchant Reference
+     *
+     * @return string
+     */
+    public function getMerchantReference()
+    {
+        return $this->getParameter('merchantReference');
+    }
+
+    /**
+     * Set Merchant Reference
+     *
+     * @param string $value
+     *
+     * @return \Omnipay\Common\Message\AbstractRequest
+     */
+    public function setMerchantReference($value)
+    {
+        return $this->setParameter('merchantReference', $value);
     }
 }

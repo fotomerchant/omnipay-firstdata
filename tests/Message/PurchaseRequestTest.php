@@ -18,12 +18,14 @@ class PurchaseRequestTest extends TestCase
             'tokenCardHolderName' => 'John Smith',
             'tokenCardExpiry' => '0125',
             'tokenCardCvv' => '123',
+            'merchantReference' => '019-111-123456',
         ]);
 
         $data = $request->getData();
         $this->assertEquals('token', $data['method']);
         $this->assertEquals('1200', $data['amount']);
         $this->assertEquals('USD', $data['currency_code']);
+        $this->assertEquals('019-111-123456', $data['merchant_ref']);
 
         $token = $data['token'];
         $this->assertEquals('FDToken', $token['token_type']);
