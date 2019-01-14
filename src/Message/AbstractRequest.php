@@ -1,8 +1,4 @@
 <?php
-/**
- * Payeezy Abstract Request
- */
-
 namespace Omnipay\Payeezy\Message;
 
 /**

@@ -1,5 +1,4 @@
 <?php
-
 namespace Omnipay\Payeezy;
 
 use Omnipay\Tests\GatewayTestCase;
@@ -38,20 +37,29 @@ class GatewayTest extends GatewayTestCase
             'tokenCardType' => '1',
             'tokenCardExpiry' => '1',
             'tokenCardCvv' => '1',
+            'merchantReference' => '1',
         ])->send();
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
     }
 
-//    public function testRefundSuccess()
-//    {
-//        $this->setMockHttpResponse('PurchaseSuccess.txt');
-//
-//        $response = $this->gateway->authorize($this->options)->send();
-//
-//        $this->assertTrue($response->isSuccessful());
-//        $this->assertFalse($response->isRedirect());
-//        $this->assertEquals('ET181147::28513493', $response->getTransactionReference());
-//    }
+    public function testRefundSuccess()
+    {
+        $this->setMockHttpResponse('RefundSuccess.txt');
+
+        $response = $this->gateway->purchase([
+            'amount' => '10.00',
+            'currency' => 'USD',
+            'token' => '1',
+            'tokenCardHolderName' => '1',
+            'tokenCardType' => '1',
+            'tokenCardExpiry' => '1',
+            'tokenCardCvv' => '1',
+            'merchantReference' => '1',
+        ])->send();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+    }
 }
