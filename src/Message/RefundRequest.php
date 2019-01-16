@@ -19,7 +19,7 @@ class RefundRequest extends AbstractRequest
         $data['amount'] = str_replace('.', '', $this->getAmount()); // needs to be in cents
 
         if ($token = $this->getToken()) {
-            $this->validate('tokenCardType', 'tokenCardHolderName', 'tokenCardExpiry', 'tokenCardCvv');
+            $this->validate('tokenCardType', 'tokenCardHolderName', 'tokenCardExpiry');
 
             $data['token'] = [
                 'token_type' => 'FDToken',
@@ -28,7 +28,6 @@ class RefundRequest extends AbstractRequest
                     'value' => $token,
                     'cardholder_name' => $this->getTokenCardHolderName(),
                     'exp_date' => $this->getTokenCardExpiry(),
-                    'cvv' => $this->getTokenCardCvv(),
                 ],
             ];
         }
@@ -88,24 +87,6 @@ class RefundRequest extends AbstractRequest
     public function setTokenCardExpiry($value)
     {
         return $this->setParameter('tokenCardExpiry', $value);
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTokenCardCvv()
-    {
-        return $this->getParameter('tokenCardCvv');
-    }
-
-    /**
-     * @param string|null $value
-     *
-     * @return \Omnipay\Common\Message\AbstractRequest
-     */
-    public function setTokenCardCvv($value)
-    {
-        return $this->setParameter('tokenCardCvv', $value);
     }
 
     /**

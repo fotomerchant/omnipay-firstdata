@@ -48,14 +48,13 @@ class GatewayTest extends GatewayTestCase
     {
         $this->setMockHttpResponse('RefundSuccess.txt');
 
-        $response = $this->gateway->purchase([
+        $response = $this->gateway->refund([
             'amount' => '10.00',
             'currency' => 'USD',
             'token' => '1',
             'tokenCardHolderName' => '1',
             'tokenCardType' => '1',
             'tokenCardExpiry' => '1',
-            'tokenCardCvv' => '1',
             'merchantReference' => '1',
         ])->send();
 

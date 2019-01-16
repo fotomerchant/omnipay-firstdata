@@ -16,7 +16,6 @@ class RefundRequestTest extends TestCase
             'tokenCardType' => 'visa',
             'tokenCardHolderName' => 'John Smith',
             'tokenCardExpiry' => '0125',
-            'tokenCardCvv' => '123',
             'merchantReference' => '019-111-123456',
         ]);
 
@@ -34,6 +33,5 @@ class RefundRequestTest extends TestCase
         $this->assertEquals('visa', $tokenData['type']);
         $this->assertEquals('John Smith', $tokenData['cardholder_name']);
         $this->assertEquals('0125', $tokenData['exp_date']);
-        $this->assertEquals('123', $tokenData['cvv']);
     }
 }
