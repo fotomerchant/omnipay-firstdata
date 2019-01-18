@@ -36,7 +36,6 @@ class Gateway extends AbstractGateway
         return array(
             'apiKey' => '',
             'apiSecret'  => '',
-            'merchantToken'  => '',
             'testMode'  => false,
         );
     }
@@ -83,28 +82,6 @@ class Gateway extends AbstractGateway
     public function setApiSecret($value)
     {
         return $this->setParameter('apiSecret', $value);
-    }
-
-    /**
-     * Get Merchant Token
-     *
-     * @return string
-     */
-    public function getMerchantToken()
-    {
-        return $this->getParameter('merchantToken');
-    }
-
-    /**
-     * Set Merchant Token
-     *
-     * @param string $value
-     *
-     * @return Gateway
-     */
-    public function setMerchantToken($value)
-    {
-        return $this->setParameter('merchantToken', $value);
     }
 
     /**
