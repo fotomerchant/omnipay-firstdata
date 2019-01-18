@@ -24,7 +24,7 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Omnipay\\FirstData\\" : "src/" }
+        "psr-4": { "Omnipay\\Payeezy\\" : "src/" }
     },
     "require": {
         "omnipay/common": "~2.0"

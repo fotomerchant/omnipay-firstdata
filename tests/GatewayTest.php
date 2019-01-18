@@ -1,179 +1,64 @@
 <?php
-
-namespace Omnipay\FirstData;
+namespace Omnipay\Payeezy;
 
 use Omnipay\Tests\GatewayTestCase;
 
 class GatewayTest extends GatewayTestCase
 {
+    /** @var  Gateway */
+    protected $gateway;
+
     public function setUp()
     {
         parent::setUp();
 
-        $this->gateway = new ConnectGateway($this->getHttpClient(), $this->getHttpRequest());
-        $this->gateway->setSharedSecret('96MbdNvxTa');
-        $this->gateway->setStoreId('1120540155');
-
-        $this->options = array(
-            'amount' => '13.00',
-            'returnUrl' => 'https://www.example.com/return',
-            'card' => $this->getValidCard(),
-            'transactionId' => 'abc123',
-            'currency' => 'GBP',
-            'customerId' => 54321
-        );
+        $this->gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest());
+        $this->gateway->setApiKey('y6pWAJNyJyjGv66IsVuWnklkKUPFbb0a');
+        $this->gateway->setApiSecret('86fbae7030253af3cd15faef2a1f4b67353e41fb6799f576b5093ae52901e6f7');
+        $this->gateway->setMerchantToken('fdoa-a480ce8951daa73262734cf102641994c1e55e7cdf4c02b6');
     }
 
-    public function testPurchase()
+    public function testProperties()
     {
-        $response = $this->gateway->purchase($this->options)->send();
-
-        $this->assertFalse($response->isSuccessful());
-        $this->assertTrue($response->isRedirect());
-        $this->assertNull($response->getTransactionReference());
-        $this->assertContains('ipg-online.com/connect/gateway/processing', $response->getRedirectUrl());
+        $this->assertEquals('y6pWAJNyJyjGv66IsVuWnklkKUPFbb0a', $this->gateway->getApiKey());
+        $this->assertEquals('86fbae7030253af3cd15faef2a1f4b67353e41fb6799f576b5093ae52901e6f7', $this->gateway->getApiSecret());
+        $this->assertEquals('fdoa-a480ce8951daa73262734cf102641994c1e55e7cdf4c02b6', $this->gateway->getMerchantToken());
     }
 
-    public function testCompletePurchaseSuccess()
+    public function testPurchaseSuccess()
     {
-        $this->getHttpRequest()->request->replace(
-            array(
-                'chargetotal' => '110.00',
-                'response_hash' => '796d7ca236576256236e92900dedfd55be08567a',
-                'status' => 'APPROVED',
-                'oid' => 'abc123456',
-                'txndatetime' => '2013:09:27-16:06:26',
-                'approval_code' => 'Y:136432:0013649958:PPXM:0015'
-            )
-        );
+        $this->setMockHttpResponse('PurchaseSuccess.txt');
 
-        $response = $this->gateway->completePurchase($this->options)->send();
+        $response = $this->gateway->purchase([
+            'amount' => '10.00',
+            'currency' => 'USD',
+            'token' => '1',
+            'tokenCardHolderName' => '1',
+            'tokenCardType' => '1',
+            'tokenCardExpiry' => '1',
+            'tokenCardCvv' => '1',
+            'merchantReference' => '1',
+        ])->send();
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertEquals('abc123456', $response->getTransactionId());
-        $this->assertSame('APPROVED', $response->getMessage());
-        $this->assertNull($response->getTransactionReference());
     }
 
-    /**
-     * @expectedException \Omnipay\Common\Exception\InvalidResponseException
-     */
-    public function testCompletePurchaseInvalidCallbackPassword()
+    public function testRefundSuccess()
     {
-        $this->getHttpRequest()->request->replace(
-            array(
-                'chargetotal' => '110.00',
-                'response_hash' => 'FAKE',
-                'status' => 'APPROVED',
-                'oid' => 'abc123456',
-                'txndatetime' => '2013:09:27-16:06:26',
-                'approval_code' => 'Y:136432:0013649958:PPXM:0015'
-            )
-        );
+        $this->setMockHttpResponse('RefundSuccess.txt');
 
-        $response = $this->gateway->completePurchase($this->options)->send();
-    }
+        $response = $this->gateway->refund([
+            'amount' => '10.00',
+            'currency' => 'USD',
+            'token' => '1',
+            'tokenCardHolderName' => '1',
+            'tokenCardType' => '1',
+            'tokenCardExpiry' => '1',
+            'merchantReference' => '1',
+        ])->send();
 
-    public function testCompletePurchaseError()
-    {
-        $this->getHttpRequest()->request->replace(
-            array(
-                'chargetotal' => '110.00',
-                'response_hash' => '0dfe9e4b3c6306343926207a8814a48f72087cc7',
-                'status' => 'DECLINED',
-                'oid' => 'abc1234',
-                'txndatetime' => '2013:09:27-16:00:19',
-                'approval_code' => 'N:05:DECLINED'
-            )
-        );
-
-        $response = $this->gateway->completePurchase($this->options)->send();
-
-        $this->assertFalse($response->isSuccessful());
+        $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertEquals('abc1234', $response->getTransactionId());
-        $this->assertSame('DECLINED', $response->getMessage());
-    }
-
-    /**
-     * testPurchaseWithHostedDataId.
-     *
-     * Simulates a purchase with "save this card" selected
-     */
-    public function testPurchaseWithHostedDataId()
-    {
-        $dataId = rand();
-        $this->options['hostedDataId'] = $dataId;
-
-        $response = $this->gateway->purchase($this->options)->send();
-
-        $this->assertFalse($response->isSuccessful());
-        $this->assertTrue($response->isRedirect());
-        $requestData = $response->getRedirectData();
-        $this->assertEquals($dataId, $requestData['hosteddataid']);
-    }
-
-    /**
-     * testPurchaseWithHostedDataIdAndWithoutCardFailsWithoutCVV.
-     *
-     * Simulates paying using a saved card, rather than passing card data
-     * This example is checking that an exception occurs if missing the CVV number
-     *
-     * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     */
-    public function testPurchaseWithHostedDataIdAndWithoutCardFailsWithoutCVV()
-    {
-        $dataId = rand();
-        $this->options['hostedDataId'] = $dataId;
-        // Remove number to simulate repeat purchase
-        unset($this->options['card']['number']);
-        // Also remove required cvv to check for error
-        unset($this->options['card']['cvv']);
-
-        $response = $this->gateway->purchase($this->options)->send();
-
-        $this->assertFalse($response->isSuccessful());
-        $this->assertTrue($response->isRedirect());
-        $requestData = $response->getRedirectData();
-        $this->assertEquals($dataId, $requestData['hosteddataid']);
-    }
-
-    /**
-     * testPurchaseWithHostedDataIdAndWithoutCard.
-     *
-     * Simulates paying using a saved card, rather than passing card data
-     */
-    public function testPurchaseWithHostedDataIdAndWithoutCard()
-    {
-        $dataId = rand();
-        $this->options['hostedDataId'] = $dataId;
-        unset($this->options['card']);
-        $this->options['card']['cvv'] = 123;
-
-        $response = $this->gateway->purchase($this->options)->send();
-
-        $this->assertFalse($response->isSuccessful());
-        $this->assertTrue($response->isRedirect());
-        $requestData = $response->getRedirectData();
-        $this->assertEquals($dataId, $requestData['hosteddataid']);
-    }
-
-    /**
-     * testPurchaseErrorWhenMissingHostedDataIdAndWithoutCardNumber.
-     *
-     * Simulates neither hosteddataid or card data being passed, should be caught in app.
-     *
-     * @expectedException \Omnipay\Common\Exception\InvalidCreditCardException
-     */
-    public function testPurchaseErrorWhenMissingHostedDataIdAndWithoutCardNumber()
-    {
-        unset($this->options['card']);
-        $this->options['card']['cvv'] = 123;
-
-        $response = $this->gateway->purchase($this->options)->send();
-
-        $this->assertFalse($response->isSuccessful());
-        $this->assertTrue($response->isRedirect());
     }
 }
