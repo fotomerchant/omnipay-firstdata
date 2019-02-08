@@ -148,13 +148,13 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
         $client->setBody(json_encode($data), $headers['Content-Type']);
 
-        if ($this->getTestMode()) {
-            /*
-             * To fix the following API issue:
-             * [curl] 60: SSL certificate problem: self signed certificate in certificate chain [url] https://api-cert.payeezy.com/v1/transactions/
-             */
-            $client->getCurlOptions()->set(CURLOPT_SSL_VERIFYPEER, false);
-        }
+        /*
+         * To fix the following API issue:
+         *
+         * [curl] 60: SSL certificate problem: self signed certificate in certificate chain [url] https://api-cert.payeezy.com/v1/transactions/
+         * [curl] 60: Peer's certificate issuer has been marked as not trusted by the user. [url] https://api.payeezy.com/v1/transactions/
+         */
+        $client->getCurlOptions()->set(CURLOPT_SSL_VERIFYPEER, false);
 
         $httpResponse = $client->send();
 
