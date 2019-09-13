@@ -141,12 +141,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         $hmacAuthHeaders = $this->hmacAuthorizationTokenHeaders($data);
         $headers = array_merge($headers, $hmacAuthHeaders);
 
-        $client = $this->httpClient->post(
+        $httpResponse = $this->httpClient->request(
+            'POST',
             $endpoint,
-            $headers
+            $headers,
+            json_encode($data)
         );
-
-        $client->setBody(json_encode($data), $headers['Content-Type']);
 
         /*
          * To fix the following API issue:
@@ -154,11 +154,9 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
          * [curl] 60: SSL certificate problem: self signed certificate in certificate chain [url] https://api-cert.payeezy.com/v1/transactions/
          * [curl] 60: Peer's certificate issuer has been marked as not trusted by the user. [url] https://api.payeezy.com/v1/transactions/
          */
-        $client->getCurlOptions()->set(CURLOPT_SSL_VERIFYPEER, false);
+        // $client->getCurlOptions()->set(CURLOPT_SSL_VERIFYPEER, false);
 
-        $httpResponse = $client->send();
-
-        return $this->createResponse($httpResponse->getBody());
+        return $this->createResponse($httpResponse->getBody()->getContents());
     }
 
     /**
